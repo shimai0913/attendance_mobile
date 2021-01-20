@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "812858810333",
+    "project_id": "rakudasu-mobile",
+    "storage_bucket": "rakudasu-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:812858810333:android:3b1f94a8bab93c6e2ee034",
+        "android_client_info": {
+          "package_name": "com.example.rakudasu_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "812858810333-ged63a2ujpg2cl6grlnbcjhbpvfsgsl9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJQ5eNKYo3vIXRS29pL3uMJpdf8nNANA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "812858810333-ged63a2ujpg2cl6grlnbcjhbpvfsgsl9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
