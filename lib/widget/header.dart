@@ -13,30 +13,27 @@ class Header extends HookWidget with PreferredSizeWidget{
   @override
   Widget build(BuildContext context) {
     final lsp = useProvider(loginStateProvider);
+    final user =  lsp.getCurrentUser();
+    String photoUrl;
+    if (user.photoURL != null) photoUrl =  user.photoURL;
+    if (user.providerData.length > 0) {
+      for (var date in user.providerData) {
+        if (date.providerId == 'google.com') {
+          photoUrl = date.photoURL;
+        }
+      }
+    }
     final int count = useProvider(counterProvider).state;
     return AppBar(
       // leading: IconButton(
       //   icon: Icon(Icons.logout, size: 25,),
+      //   onPressed: (){
+      //     print('ユーザ：$user');
+      //     print(user.providerData);
+      //   },
       // ),
       actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.account_circle, color: Colors.indigo, size: 35,),
-          onPressed: () => {
-            print('to MyPage')
-          },
-        ),
-        IconButton(
-          icon: Icon(Icons.logout, size: 25, color: Colors.grey[900],),
-          onPressed: () async {
-            await lsp.signOut();
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RootPage()
-              )
-            );
-          }
-        ),
+        _buildProfileIconButton(photoUrl, user),
       ],
       title: _buildTitle(count),
       backgroundColor: Colors.white,
@@ -44,6 +41,25 @@ class Header extends HookWidget with PreferredSizeWidget{
       elevation: 2.0,
     );
   }
+}
+Widget _buildProfileIconButton(photoUrl, user) {
+  const iconSize = 35.0;
+  return IconButton(
+    icon: photoUrl == null || photoUrl == ''
+        ? Icon(
+            Icons.account_circle,
+            size: iconSize,
+            color: Colors.indigo,
+          )
+        : CircleAvatar(
+            backgroundImage: NetworkImage(photoUrl),
+            backgroundColor: Colors.transparent,
+            radius: iconSize / 2,
+          ),
+    onPressed: (){
+      print('ユーザー: $user');
+    },
+  );
 }
 
 Widget _buildTitle(int index) {

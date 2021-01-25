@@ -158,6 +158,14 @@ class LoginPage extends HookWidget {
                   child: GestureDetector(
                     onTap: () async {
                       print('Googleログイン');
+                      await lsp.loginWithGoogle();
+                      await dialog.show(context, 'Googleでログインしました');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RootPage()
+                        )
+                      );
                     },
                     child: Container(
                       decoration: BoxDecoration(

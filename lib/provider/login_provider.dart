@@ -22,15 +22,16 @@ class LoginStateProvider extends StateNotifier<LoginState> {
     await read(authProvider).login(mail, password);
   }
 
+  Future loginWithGoogle() async {
+    await read(authProvider).loginWithGoogle();
+  }
+
   Future signOut() async {
     await read(authProvider).signOut();
   }
 
-  Future verifyPhoneNumber() async {
-    await read(authProvider).verifyPhoneNumber();
-  }
-  Future signInWithPhoneNumber() async {
-    await read(authProvider).signInWithPhoneNumber();
+  Future linkWithGoogle() async {
+    await read(authProvider).linkWithGoogle();
   }
 
   setMailText(text) {

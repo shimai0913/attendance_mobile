@@ -5,8 +5,6 @@ import '../provider/signup_provider.dart';
 import '../root.dart';
 import './login_page.dart';
 import '../widget/dialog.dart';
-import '../widget/phoneNumAuth_modal.dart';
-
 
 class SignUpPage extends HookWidget {
   final passwordController = TextEditingController();
@@ -114,78 +112,78 @@ class SignUpPage extends HookWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 10.0,),
-                Container(
-                  child: Row(children: <Widget>[
-                    Expanded(
-                      child: new Container(
-                        margin: const EdgeInsets.only(left: 10.0, right: 20.0),
-                        child: Divider(
-                          color: Colors.black,
-                          height: 36,
-                        )
-                      ),
-                    ),
-                    Text("OR"),
-                    Expanded(
-                      child: new Container(
-                        margin: const EdgeInsets.only(left: 20.0, right: 10.0),
-                        child: Divider(
-                          color: Colors.black,
-                          height: 36,
-                        )
-                      ),
-                    ),
-                  ],)
-                ),
-                SizedBox(height: 10.0,),
-                Container(
-                  height: 40.0,
-                  color: Colors.transparent,
-                  child: GestureDetector(
-                    onTap: () async {
-                      print('Googleで新規登録');
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return PhoneNumAuthModal();
-                          },
-                          fullscreenDialog: true
-                        ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.black,
-                          style: BorderStyle.solid,
-                          width: 1.0,
-                        ),
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Center(
-                            child: ImageIcon(AssetImage('images/google_icon.png')),
-                          ),
-                          SizedBox(width: 10.0),
-                          Center(
-                            child: Text(
-                              'Googleで新規登録',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Montserrat',
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // SizedBox(height: 10.0,),
+                // Container(
+                //   child: Row(children: <Widget>[
+                //     Expanded(
+                //       child: new Container(
+                //         margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                //         child: Divider(
+                //           color: Colors.black,
+                //           height: 36,
+                //         )
+                //       ),
+                //     ),
+                //     Text("OR"),
+                //     Expanded(
+                //       child: new Container(
+                //         margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                //         child: Divider(
+                //           color: Colors.black,
+                //           height: 36,
+                //         )
+                //       ),
+                //     ),
+                //   ],)
+                // ),
+                // SizedBox(height: 10.0,),
+                // Container(
+                //   height: 40.0,
+                //   color: Colors.transparent,
+                //   child: GestureDetector(
+                //     onTap: () async {
+                //       print('Googleで新規登録');
+                //       Navigator.of(context).push(
+                //         MaterialPageRoute(
+                //           builder: (BuildContext context) {
+                //             return PhoneNumAuthModal();
+                //           },
+                //           fullscreenDialog: true
+                //         ),
+                //       );
+                //     },
+                //     child: Container(
+                //       decoration: BoxDecoration(
+                //         border: Border.all(
+                //           color: Colors.black,
+                //           style: BorderStyle.solid,
+                //           width: 1.0,
+                //         ),
+                //           color: Colors.transparent,
+                //           borderRadius: BorderRadius.circular(20.0),
+                //       ),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: <Widget>[
+                //           Center(
+                //             child: ImageIcon(AssetImage('images/google_icon.png')),
+                //           ),
+                //           SizedBox(width: 10.0),
+                //           Center(
+                //             child: Text(
+                //               'Googleで新規登録',
+                //               style: TextStyle(
+                //                 fontWeight: FontWeight.bold,
+                //                 fontFamily: 'Montserrat',
+                //                 color: Colors.black,
+                //               ),
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Container(
                   // alignment: Alignment(1.0, 0.0),
                   padding: EdgeInsets.only(top: 15.0,),
