@@ -62,7 +62,7 @@ class PhoneNumAuthModal extends HookWidget {
                       // await dialog.show(context, '$phoneNumber宛に認証コードを送信します');
                       // firebase 認証
                       try {
-                        String number = "+1" + phoneNumber;
+                        String number = "+81" + phoneNumber;
                         // await lsp.linkWithPhoneNumber(number);
                         await _auth.verifyPhoneNumber(
                           phoneNumber: number,
