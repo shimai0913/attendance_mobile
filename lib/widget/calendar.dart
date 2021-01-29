@@ -1,14 +1,20 @@
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import '../provider/login_provider.dart';
+import '../root.dart';
+
 
 
 final calendarControllerProvider = StateProvider((ref) => CalendarController());
@@ -16,32 +22,6 @@ final workTypeProvider = StateProvider((ref) => '');
 final openingTimeProvider = StateProvider((ref) => '');
 final closingTimeProvider = StateProvider((ref) => '');
 final calendarProvider = ChangeNotifierProvider.autoDispose((ref) => CalendarNotifier());
-// final attendancesInfoProvider = ChangeNotifierProvider.autoDispose((ref) => AttendancesInfoNotifier());
-
-// class AttendancesInfoNotifier with ChangeNotifier {
-//   String _openingTime;
-//   String get openingTime => _openingTime;
-//   void updateOpeningTime(openingTime) {
-//     print('openingTime アップデート => $openingTime');
-//     _openingTime = openingTime;
-//     notifyListeners();
-//   }
-//   String _closingTime;
-//   String get closingTime => _closingTime;
-//   void updateClosingTime(closingTime) {
-//     print('closingTime アップデート => $closingTime');
-//     _closingTime = closingTime;
-//     notifyListeners();
-//   }
-
-//   String _worktype;
-//   String get worktype => _worktype;
-//   void updateWorktype(worktype) {
-//     print('worktype アップデート => $worktype');
-//     _worktype = worktype;
-//     notifyListeners();
-//   }
-// }
 
 final Map<DateTime, List> _holidays = {
   DateTime(2021, 1, 1): ['New Year\'s Day'],
@@ -70,14 +50,20 @@ class CalendarNotifier with ChangeNotifier {
 class Calendar extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    final lsp = useProvider(loginStateProvider);
+    final user = lsp.getCurrentUser();
     final CalendarController _calendarController = useProvider(calendarControllerProvider).state;
     Map<DateTime, List> _events = useProvider(calendarProvider).events;
     final DateTime _selectedDay = useProvider(calendarProvider).selectedDay;
     void _onDaySelected(DateTime day, List events, List holidays) {
       context.read(calendarProvider).onDaySelected(day, events, holidays);
-    };
+    }
+    final Stream<QuerySnapshot> stream = FirebaseFirestore.instance.collection('users').doc(user.uid).collection('attendances').snapshots();
     useEffect((){
       print('カレンダー init');
+      print('_selectedDay.add(Duration(days: 0))');
+      print(_selectedDay.add(Duration(days: 0)));
+
       _events = {
         _selectedDay.add(Duration(days: 0)): [
           {'worktype': 'SES', 'start': '09:00', 'end': '18:00'},
@@ -112,52 +98,120 @@ class Calendar extends HookWidget {
                 ),
               ]
             ),
-            child: TableCalendar(
-              calendarController: _calendarController,
-              events: _events,
-              holidays: _holidays,
-              onDaySelected: _onDaySelected,
-              startingDayOfWeek: StartingDayOfWeek.sunday,
-              calendarStyle: CalendarStyle(
-                canEventMarkersOverflow: true,
-                // weekdayStyle: TextStyle(color: Colors.black),
-                // weekendStyle: TextStyle(color: Colors.red),
-                selectedColor: Colors.indigo[800],
-                todayColor: Colors.indigo[50],
-                markersColor: Colors.brown[700],
-                outsideDaysVisible: false, // 他の月の表示を消す
+            // child: Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection('users').doc(user.uid).collection('attendances').snapshots(),
+                builder: (context, snapshot) {
+                  // return Text('あああ');
+                  final List<DocumentSnapshot> documents = (snapshot.data.docs != null) ? snapshot.data.docs : '';
+                  // if (snapshot.data.docs != null) {documents = snapshot.data.docs;}
+                                    // if (snapshot.hasData) {
+                  documents.map((doc) => {
+                    print('='*60),
+                    print(doc),
+                    print('='*60),
+                  });
+                    return TableCalendar(
+                      calendarController: _calendarController,
+                      events: _events,
+                      holidays: _holidays,
+                      onDaySelected: _onDaySelected,
+                      startingDayOfWeek: StartingDayOfWeek.sunday,
+                      calendarStyle: CalendarStyle(
+                        canEventMarkersOverflow: true,
+                        // weekdayStyle: TextStyle(color: Colors.black),
+                        // weekendStyle: TextStyle(color: Colors.red),
+                        selectedColor: Colors.indigo[800],
+                        todayColor: Colors.indigo[50],
+                        markersColor: Colors.brown[700],
+                        outsideDaysVisible: false, // 他の月の表示を消す
+                      ),
+                      daysOfWeekStyle: DaysOfWeekStyle(
+                        weekdayStyle: TextStyle(
+                          // fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat',
+                          fontSize: 16,
+                        ),
+                        weekendStyle: TextStyle(
+                          color: Colors.red[400],
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat',
+                          fontSize: 16,
+                        ),
+                      ),
+                      headerStyle: HeaderStyle(
+                        formatButtonVisible: false,
+                        titleTextStyle: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat',
+                          fontSize: 20,
+                        ),
+                        leftChevronIcon: Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.black,
+                        ),
+                        rightChevronIcon: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.black,
+                        ),
+                      ),
+                    );
+                  // } else if (snapshot.hasError) {
+                  //   return Text('エラーだよ');
+                  // }
+
+                }
               ),
-              daysOfWeekStyle: DaysOfWeekStyle(
-                weekdayStyle: TextStyle(
-                  // fontWeight: FontWeight.bold,
-                  fontFamily: 'Montserrat',
-                  fontSize: 16,
-                ),
-                weekendStyle: TextStyle(
-                  color: Colors.red[400],
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Montserrat',
-                  fontSize: 16,
-                ),
-              ),
-              headerStyle: HeaderStyle(
-                formatButtonVisible: false,
-                titleTextStyle: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Montserrat',
-                  fontSize: 20,
-                ),
-                leftChevronIcon: Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.black,
-                ),
-                rightChevronIcon: Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.black,
-                ),
-              ),
-            ),
+
+
+            // ),
+            // child: TableCalendar(
+            //   calendarController: _calendarController,
+            //   events: _events,
+            //   holidays: _holidays,
+            //   onDaySelected: _onDaySelected,
+            //   startingDayOfWeek: StartingDayOfWeek.sunday,
+            //   calendarStyle: CalendarStyle(
+            //     canEventMarkersOverflow: true,
+            //     // weekdayStyle: TextStyle(color: Colors.black),
+            //     // weekendStyle: TextStyle(color: Colors.red),
+            //     selectedColor: Colors.indigo[800],
+            //     todayColor: Colors.indigo[50],
+            //     markersColor: Colors.brown[700],
+            //     outsideDaysVisible: false, // 他の月の表示を消す
+            //   ),
+            //   daysOfWeekStyle: DaysOfWeekStyle(
+            //     weekdayStyle: TextStyle(
+            //       // fontWeight: FontWeight.bold,
+            //       fontFamily: 'Montserrat',
+            //       fontSize: 16,
+            //     ),
+            //     weekendStyle: TextStyle(
+            //       color: Colors.red[400],
+            //       fontWeight: FontWeight.bold,
+            //       fontFamily: 'Montserrat',
+            //       fontSize: 16,
+            //     ),
+            //   ),
+            //   headerStyle: HeaderStyle(
+            //     formatButtonVisible: false,
+            //     titleTextStyle: TextStyle(
+            //       color: Colors.black,
+            //       fontWeight: FontWeight.bold,
+            //       fontFamily: 'Montserrat',
+            //       fontSize: 20,
+            //     ),
+            //     leftChevronIcon: Icon(
+            //       Icons.arrow_back_ios,
+            //       color: Colors.black,
+            //     ),
+            //     rightChevronIcon: Icon(
+            //       Icons.arrow_forward_ios,
+            //       color: Colors.black,
+            //     ),
+            //   ),
+            // ),
           ),
           SizedBox(height: 15),
           _buildEventList(_selectedEvents),
@@ -392,19 +446,6 @@ class OpeningTimeMenu extends HookWidget {
               var formatter = new DateFormat('yyyy/MM/dd HH:mm:ss');
               var formatted = formatter.format(dateTime); // DateからString
               context.read(openingTimeProvider).state = formatted;
-              // context.read(attendancesInfoProvider).updateOpeningTime(formatted);
-              // print('dateTime: $dateTime');
-              // print('formatted: $dateTime');
-              // if(dateTime is String) {
-              //   print('dateTime は String です');
-              // } else {
-              //   print('dateTime は String じゃないです');
-              // }
-              // if(formatted is String) {
-              //   print('formatted は String です');
-              // } else {
-              //   print('formatted は String じゃないです');
-              // }
             },
           ),
         ),
@@ -506,7 +547,6 @@ class ClosingTimeMenu extends HookWidget {
               var formatter = new DateFormat('yyyy/MM/dd HH:mm:ss');
               var formatted = formatter.format(dateTime); // DateからString
               context.read(closingTimeProvider).state = formatted;
-              // context.read(attendancesInfoProvider).updateClosingTime(formatted);
             },
           ),
         ),
@@ -576,12 +616,10 @@ class Confirmation extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final lsp = useProvider(loginStateProvider);
+    final user = lsp.getCurrentUser();
     final String _worktype = useProvider(workTypeProvider).state;
     final String _openingTime = useProvider(openingTimeProvider).state;
     final String _closingTime = useProvider(closingTimeProvider).state;
-    // final String _worktype = useProvider(attendancesInfoProvider).worktype;
-    // final String _openingTime = useProvider(attendancesInfoProvider).openingTime;
-    // final String _closingTime = useProvider(attendancesInfoProvider).closingTime;
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
@@ -627,8 +665,26 @@ class Confirmation extends HookWidget {
                 height: 50.0,
                 child: GestureDetector(
                   onTap: () async {
-                    final user = lsp.getCurrentUser();
-                    print('ログインユーザー: $user');
+                    String now = DateTime.now().toString();
+                    await FirebaseFirestore.instance.collection('users').doc(user.uid).collection('attendances').doc(now).set(
+                      {
+                        'user': user.uid,
+                        'worktype': _worktype,
+                        '_openingTime': _openingTime,
+                        '_closingTime': _closingTime,
+                      }
+                    );
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return RootPage();
+                        },
+                      ),
+                    );
                   },
                   child: Material(
                     borderRadius: BorderRadius.circular(20.0),
