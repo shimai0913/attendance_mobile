@@ -5,7 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart'; // DateFormat用
 import './closingTimeMenu.dart';
 
-
 final openingTimeProvider = StateProvider((ref) => '');
 
 class OpeningTimeMenu extends HookWidget {
@@ -41,7 +40,7 @@ class OpeningTimeMenu extends HookWidget {
             use24hFormat: true, // 24h表示(AM,PMの表示消す)
             mode: CupertinoDatePickerMode.dateAndTime,
             onDateTimeChanged: (dateTime) {
-              var formatter = new DateFormat('yyyy/MM/dd HH:mm:ss');
+              var formatter = new DateFormat('yyyy-MM-dd HH:mm:ss');
               var formatted = formatter.format(dateTime); // DateからString
               context.read(openingTimeProvider).state = formatted;
             },
