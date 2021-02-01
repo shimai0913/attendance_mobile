@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart'; // DateFormat用
 import './closingTimeMenu.dart';
+import './calendar.dart'; // calendarStateProvider用
 
 final openingTimeProvider = StateProvider((ref) => '');
 
@@ -36,9 +37,9 @@ class OpeningTimeMenu extends HookWidget {
         SizedBox(
           height: 300,
           child: CupertinoDatePicker(
-            initialDateTime: DateTime.now(),
+            mode: CupertinoDatePickerMode.time,
+            initialDateTime: context.read(calendarStateProvider).selectedDay,
             use24hFormat: true, // 24h表示(AM,PMの表示消す)
-            mode: CupertinoDatePickerMode.dateAndTime,
             onDateTimeChanged: (dateTime) {
               var formatter = new DateFormat('yyyy-MM-dd HH:mm:ss');
               var formatted = formatter.format(dateTime); // DateからString

@@ -13,8 +13,11 @@ final calendarStateProvider = ChangeNotifierProvider.autoDispose((ref) => Calend
 class CalendarNotifier with ChangeNotifier {
   DateTime _selectedDay = DateTime.now();
   DateTime get selectedDay => _selectedDay;
+  // Map<DateTime, List> _events = {};
+  // Map<DateTime, List> get events => _events;
   List<dynamic> _selectedEvents = [];
   List<dynamic> get selectedEvents => _selectedEvents;
+
   void onDaySelected(DateTime day, List events, List holidays) {
     _selectedDay = day;
     _selectedEvents = events;
@@ -30,12 +33,30 @@ class Calendar extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final CalendarController _calendarController = useProvider(calendarControllerProvider).state;
+    // Map<DateTime, List> _events = useProvider(calendarStateProvider).events;
     void _onDaySelected(DateTime day, List events, List holidays) {
       context.read(calendarStateProvider).onDaySelected(day, events, holidays);
     }
     final lsp = useProvider(loginStateProvider);
     final user = lsp.getCurrentUser();
-    Map<DateTime, List> _events = {};
+    // final Stream<QuerySnapshot> stream = FirebaseFirestore.instance.collection('users').doc(user.uid).collection('attendances').snapshots();
+    // useEffect((){
+    //   print('カレンダー init');
+    //   print('_selectedDay.add(Duration(days: 0))');
+    //   print(_selectedDay.add(Duration(days: 0)));
+
+    //   _events = {
+    //     _selectedDay.add(Duration(days: 0)): [
+    //       {'worktype': 'SES', 'start': '09:00', 'end': '18:00'},
+    //     ],
+    //     _selectedDay.add(Duration(days: 1)): [
+    //       {'worktype': 'SES', 'start': '09:00', 'end': '18:00'},
+    //       {'worktype': 'SES', 'start': '09:00', 'end': '18:00'},
+    //     ],
+    //   };
+    //   context.read(calendarProvider).init(_events, _selectedDay);
+    //   return;
+    // },[]);
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
       width: double.infinity,
@@ -56,19 +77,26 @@ class Calendar extends HookWidget {
       child:  StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('users').doc(user.uid).collection('attendances') .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          Map<DateTime, List> _events = {};
           if (snapshot.hasData) {
             var mappedData = snapshot.data.docs.map((doc) => doc.data()).toList();
             for (var data in mappedData) {
               // 開始時間から日付特定
-              DateTime day = DateTime.parse(data['_openingTime']);
+              var day = data['day'];
+              day = DateTime.parse(day);
               String start = data['_openingTime'].substring(11, 16);
               String end = data['_closingTime'].substring(11, 16);
               // key作成
               final key = day.add(Duration(days: 0));
               // param作成
-              final param = [{'worktype': data['worktype'], 'start': start, 'end': end},];
+              final param = {'worktype': data['worktype'], 'start': start, 'end': end};
               // key: param を_eventsに追加していく
-              _events[key] = param;
+              if (!_events.containsKey(key)) {
+                _events[key] = [];
+                _events[key].add(param);
+              } else if (_events.containsKey(key)) {
+                _events[key].add(param);
+              }
             }
             return TableCalendar(
               calendarController: _calendarController,

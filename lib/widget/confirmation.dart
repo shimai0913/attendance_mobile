@@ -3,11 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart'; // DateFormat用
 import '../root.dart'; // RootPage()用
 import '../provider/login_provider.dart'; // loginStateProvider用
 import './workTypeMenu.dart'; // workTypeProvider用
 import './openingTimeMenu.dart'; // openingTimeProvider用
 import './closingTimeMenu.dart'; // closingTimeProvider用
+import './calendar.dart'; // calendarStateProvider用
 
 class Confirmation extends HookWidget {
   @override
@@ -63,9 +65,12 @@ class Confirmation extends HookWidget {
                 child: GestureDetector(
                   onTap: () async {
                     String now = DateTime.now().toString();
+                    var formatter = new DateFormat('yyyy-MM-dd 00:00:00');
+                    var formatted = formatter.format(context.read(calendarStateProvider).selectedDay); // DateからString
                     await FirebaseFirestore.instance.collection('users').doc(user.uid).collection('attendances').doc(now).set(
                       {
                         'user': user.uid,
+                        'day': formatted,
                         'worktype': _worktype,
                         '_openingTime': _openingTime,
                         '_closingTime': _closingTime,
