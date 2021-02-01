@@ -40,7 +40,7 @@ class ClosingTimeMenu extends HookWidget {
             use24hFormat: true, // 24h表示(AM,PMの表示消す)
             mode: CupertinoDatePickerMode.dateAndTime,
             onDateTimeChanged: (dateTime) {
-              var formatter = new DateFormat('yyyy/MM/dd HH:mm:ss');
+              var formatter = new DateFormat('yyyy-MM-dd HH:mm:ss');
               var formatted = formatter.format(dateTime); // DateからString
               context.read(closingTimeProvider).state = formatted;
             },

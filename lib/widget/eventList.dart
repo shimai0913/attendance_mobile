@@ -2,28 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-final calendarProvider = ChangeNotifierProvider.autoDispose((ref) => CalendarNotifier());
-
-class CalendarNotifier with ChangeNotifier {
-  DateTime _selectedDay = DateTime.now();
-  DateTime get selectedDay => _selectedDay;
-  Map<DateTime, List> _events = {};
-  Map<DateTime, List> get events => _events;
-  List<dynamic> _selectedEvents = [];
-  List<dynamic> get selectedEvents => _selectedEvents;
-
-  void onDaySelected(DateTime day, List events, List holidays) {
-    _selectedDay = day;
-    _selectedEvents = events;
-    notifyListeners();
-  }
-}
+import './calendar.dart'; // calendarStateProvider用
 
 class EventList extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final List<dynamic> _selectedEvents = useProvider(calendarProvider).selectedEvents;
+    final List<dynamic> _selectedEvents = useProvider(calendarStateProvider).selectedEvents;
     if (_selectedEvents.length > 0) {
       return Flexible(
         child: ListView.builder(
