@@ -16,17 +16,45 @@ class EventList extends HookWidget {
             String worktype = _selectedEvents[index]['worktype'];
             String start = _selectedEvents[index]['start'];
             String end = _selectedEvents[index]['end'];
+            List<Color> color;
+            Color shadowColor;
+            switch (worktype) {
+              case 'SES':
+                color = [Colors.indigo, Colors.indigoAccent];
+                shadowColor = Colors.indigo;
+                break;
+              case '出勤予定':
+                color = [Colors.grey, Colors.blueGrey];
+                shadowColor = Colors.grey;
+                break;
+              case '受託':
+                color = [Colors.pink, Colors.pinkAccent];
+                shadowColor = Colors.pink;
+                break;
+              case '派遣':
+                color = [Colors.orange, Colors.orangeAccent];
+                shadowColor = Colors.orange;
+                break;
+              case '内勤':
+                color = [Colors.lightGreen, Colors.lightGreenAccent];
+                shadowColor = Colors.lightGreen;
+                break;
+              case '社内業務':
+                color = [Colors.green, Colors.greenAccent];
+                shadowColor = Colors.green;
+                break;
+            }
             return Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 gradient: LinearGradient(
-                  colors: [Colors.indigo, Colors.indigoAccent],
+                  colors: color,
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.indigo,
+                    color: shadowColor,
                     blurRadius: 6,
                     offset: Offset(0,6),
                   )
