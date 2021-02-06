@@ -20,19 +20,19 @@ class Footer extends HookWidget{
         items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              title: Text('ホーム'),
+              label: 'ホーム',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today),
-              title: Text('カレンダー'),
+              label: 'カレンダー',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.unarchive),
-              title: Text('勤怠提出'),
+              label: '勤怠提出',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.settings),
-              title: Text('設定'),
+              label: '設定',
             ),
         ]
     );

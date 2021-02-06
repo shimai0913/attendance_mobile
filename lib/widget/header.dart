@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import '../provider/login_provider.dart';
-import '../root.dart';
+// import '../root.dart';
 import './footer.dart';
 
 class Header extends HookWidget with PreferredSizeWidget{
@@ -100,5 +100,7 @@ Widget _buildTitle(int index) {
           fontFamily: 'Montserrat'
         ),
       );
+    default:
+      return null;
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import './provider/login_provider.dart';
-import './provider/root_provider.dart';
+import './provider/login_provider.dart'; // loginStateProvider
+import './provider/root_provider.dart'; // rootStateProvider
 import './provider/signup_provider.dart';
 
 import './screens/home.dart';
@@ -25,7 +25,6 @@ class RootPage extends HookWidget {
       return () {};
     }, []);
 
-    // Once complete, show your application
     return MaterialApp(
       home: rootState.page == 'login' ? LoginPage() : Home(),
     );
